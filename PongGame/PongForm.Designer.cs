@@ -87,7 +87,7 @@
             this.startButton.TabIndex = 6;
             this.startButton.Text = "Start Game";
             this.startButton.UseVisualStyleBackColor = true;
-            this.startButton.Click += new System.EventHandler(this.startButtonClick);
+            this.startButton.Click += new System.EventHandler(this.StartButtonClick);
             
             // timer1
             this.humanPaddleTimer.Interval = 5;

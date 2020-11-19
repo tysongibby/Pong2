@@ -1,4 +1,8 @@
 ﻿// based on src: https://www.codeproject.com/Articles/5250284/Small-WinForm-Pong-Game-Csharp
+// TODO: add sound
+// TODO: change color of background when goal scores and display work GOAL
+// TODO: start ball slow and move it faster after each score
+// TODO: choose color of pong ball and other items
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -84,8 +88,8 @@ namespace PongGame
             {
                 Collision(computerPaddle);
             }
-            HitBorder();
-            BallLeftField();
+            CheckIfHitBorder();
+            CheckIfBallLeftField();
             BallMoves();
         }
 
@@ -115,7 +119,7 @@ namespace PongGame
                     xBallPosition = AdjustCoordinates(5, 6);
                     break;                   
             }
-            Edge(); 
+            PaddleImpact(); 
         }
 
         // Adjusts ball x axis movement after a collision
@@ -133,7 +137,6 @@ namespace PongGame
             }
             return res;
         }
-
 
         private int Negative(int i,int n)
         {
@@ -166,7 +169,8 @@ namespace PongGame
             return ball.Location.Y > Pad.Top + 4 * ball.Height && ball.Location.Y <= Pad.Bottom + ball.Height;
         }
 
-        private void HitBorder()
+        // checks if ball hits a boarder
+        private void CheckIfHitBorder()
         {
             if (ball.Location.Y <= 0 || ball.Location.Y >= limitBall)
             {
@@ -174,8 +178,8 @@ namespace PongGame
             }
         }
 
-
-        private void BallLeftField()
+        // checks to see ball left the field of play
+        private void CheckIfBallLeftField()
         {
             // end game when a score is 10
             if (playerScore == 10 || computerScore == 10)
@@ -186,18 +190,19 @@ namespace PongGame
             // increase computer score when ball crosses player goal
             if (ball.Location.X < 0 - humanPaddle.Width && ball.Location.X < this.Width / 2)
             {
-                NewPoint(5);
+                RespawnBall(5);
                 ComputerPlayerScored(); 
             }
             // increase player score when ball crosses computer goal
             else if (ball.Location.X > computerPaddle.Location.X + computerPaddle.Width && ball.Location.X > this.Width / 2)
             {
-                NewPoint(-5);
+                RespawnBall(-5);
                 HumanPlayerScored(); 
             }
         }
 
-        private void Edge()
+        // determine what happens when ball impacts a paddle
+        private void PaddleImpact()
         {
             if (ball.Location.X < this.Width / 2)
             {
@@ -214,12 +219,15 @@ namespace PongGame
                 }
             }
         }
-        private void NewPoint(int _horizontalSpeed)
+
+        // respawns ball at starting position after score takes place
+        private void RespawnBall(int _horizontalSpeed)
         { 
             ball.Location = new Point(x, y);
             yBallPosition = 0;
             xBallPosition = _horizontalSpeed;
         }
+
         private void StartValues()
         {
             yBallPosition = 0;
@@ -250,7 +258,6 @@ namespace PongGame
             }
         }
 
-
         private void HumanPlayerScored()
         {
             playerScore++;
@@ -263,7 +270,7 @@ namespace PongGame
             computerScore++;
             computerScoreLabel.Text = computerScore.ToString(); 
         }
-        private void startButtonClick(object sender, EventArgs e)
+        private void StartButtonClick(object sender, EventArgs e)
         {
             StartValues(); 
             gameInProgress = true;
