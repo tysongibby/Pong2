@@ -13,25 +13,25 @@ namespace PongGame
     {
         public PongForm()
         {
-            InitializeComponent();
+            InitializeComponent(); // Do not modify
             this.KeyPreview = true;
         }
+
+        // ** Intialize major application components **
         const int limitPad = 170;
         const int limitBall = 245;
-        const int x = 277;  // x ball starting posistion
-        const int y = 120;  // y ball starting position
-
-        int computerScore = 0;  // tracks computer's score
-        int playerScore = 0;  // tracks player's score
-
-        int yBallPosition;  // tracks ball's vertical position (up and down)
-        int xBallPosition; // tracks ball's horizontal position (left and right)
-
-        bool moveUp = false;  //  tracks if player wants to move paddle up
-        bool moveDown = false;  // tracks if player wants to move paddle down
+        const int x = 277;  // stores ball's x starting posistion?
+        const int y = 120;  // stores ball's y starting position?
+        int computerPlayerScore = 0;  // stores computer's score
+        int humanPlayerScore = 0;  // stores player's score
+        int humanPlayerPaddleSpeed = 3; // stores movment speed of human player paddle
+        int yBallPosition;  // stores ball's vertical position (up and down)
+        int xBallPosition; // stores ball's horizontal position (left and right)
+        bool moveUp = false;  // stores if player wants to move paddle up
+        bool moveDown = false;  // stores if player wants to move paddle down
         bool gameInProgress = false;  // tracks if game is in progress
+        readonly Random randomPositionGenerator = new Random(Guid.NewGuid().GetHashCode()); // create random position generator
 
-        readonly Random randomPosition = new Random(Guid.NewGuid().GetHashCode());
 
         // toggles paddle movement to true when up or down keys are press
         private void KeyPressed(object sender, KeyEventArgs e)
@@ -50,7 +50,7 @@ namespace PongGame
             }
         }
 
-        // toggles paddle movement to false when up or down keys are press
+        // toggles paddle movement to false when up or down keys are released
         private void KeyReleased(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
@@ -64,33 +64,33 @@ namespace PongGame
             humanPaddleTimer.Stop();
         }
         
-        // moves paddle to new position
-        private void MovePaddle(object sender, EventArgs e)
-        {
-            if (moveUp && humanPaddle.Location.Y > 0)
+        // moves the human paddle to a new position by the amount stored in humanPlayerPaddleSpeed
+        private void MoveHumanPaddle(object sender, EventArgs e)
+        {           
+            if (moveUp && humanPlayerPaddle.Location.Y > 0)
             {
-                humanPaddle.Top -= 3; 
+                humanPlayerPaddle.Top = humanPlayerPaddle.Top - humanPlayerPaddleSpeed; 
             }
-            else if (moveDown && humanPaddle.Location.Y < limitPad)
+            else if (moveDown && humanPlayerPaddle.Location.Y < limitPad)
             {
-                humanPaddle.Top += 3;
+                humanPlayerPaddle.Top = humanPlayerPaddle.Top + humanPlayerPaddleSpeed;
             }
         }
 
-        // moves ball to new position
+        // is called evertime ball moves to determine new ball position and direction after a collision based on what it has collided with
         private void MoveBall(object sender, EventArgs e)
         {
-            if (ball.Bounds.IntersectsWith(humanPaddle.Bounds))
+            if (ball.Bounds.IntersectsWith(humanPlayerPaddle.Bounds))
             {
-                Collision(humanPaddle);
+                Collision(humanPlayerPaddle);
             }
-            else if (ball.Bounds.IntersectsWith(computerPaddle.Bounds))
+            else if (ball.Bounds.IntersectsWith(computerPlayerPaddle.Bounds))
             {
-                Collision(computerPaddle);
+                Collision(computerPlayerPaddle);
             }
-            CheckIfHitBorder();
-            CheckIfBallLeftField();
-            BallMoves();
+            CheckIfCollidedWithBorder();  // checks to see if ball has collided with border
+            CheckIfBallLeftField();  // checks to see if the ball left the field
+            NewBallPosition();
         }
 
         // tracks collision of ball with player paddles
@@ -111,12 +111,12 @@ namespace PongGame
                     xBallPosition = AdjustCoordinates(5, 5);
                     break;
                 case true when Low(Paddle):
-                    yBallPosition = randomPosition.Next(2, 3);
-                    xBallPosition = AdjustCoordinates(6, 7);
+                    yBallPosition = randomPositionGenerator.Next(2, 3); // sets yBallPosition to a random integer from 2 to 3
+                    xBallPosition = AdjustCoordinates(6, 7); 
                     break;
                 case true when Bot(Paddle):
-                    yBallPosition = randomPosition.Next(4, 6);
-                    xBallPosition = AdjustCoordinates(5, 6);
+                    yBallPosition = randomPositionGenerator.Next(4, 6); // sets yBallPosition to a random integer from 4 to 6
+                    xBallPosition = AdjustCoordinates(5, 6); // sets xBallPosition to a random integer from 5 to 6
                     break;                   
             }
             PaddleImpact(); 
@@ -129,7 +129,7 @@ namespace PongGame
 
             if (ball.Location.X < this.Width / 2)
             {
-                res = randomPosition.Next(i, n);
+                res = randomPositionGenerator.Next(i, n);
             }
             else if (ball.Location.X > this.Width / 2)
             {
@@ -140,7 +140,7 @@ namespace PongGame
 
         private int Negative(int i,int n)
         {
-            int myval = randomPosition.Next(i, n) * -1;
+            int myval = randomPositionGenerator.Next(i, n) * -1;
             return myval; 
         }
 
@@ -169,12 +169,13 @@ namespace PongGame
             return ball.Location.Y > Pad.Top + 4 * ball.Height && ball.Location.Y <= Pad.Bottom + ball.Height;
         }
 
-        // checks if ball hits a boarder
-        private void CheckIfHitBorder()
+        // checks if ball collides with a border
+        private void CheckIfCollidedWithBorder()
         {
+            // if the ball collides with a border, change to the opposite the direction
             if (ball.Location.Y <= 0 || ball.Location.Y >= limitBall)
-            {
-                yBallPosition *= -1; 
+            {               
+                yBallPosition = yBallPosition * -1;
             }
         }
 
@@ -182,22 +183,22 @@ namespace PongGame
         private void CheckIfBallLeftField()
         {
             // end game when a score is 10
-            if (playerScore == 10 || computerScore == 10)
+            if (humanPlayerScore == 10 || computerPlayerScore == 10)
             {
-                EndGame();
+                EndGame();  // initiates end of game processes
             }
 
-            // increase computer score when ball crosses player goal
-            if (ball.Location.X < 0 - humanPaddle.Width && ball.Location.X < this.Width / 2)
+            // check to see if the computer player has scored
+            if (ball.Location.X < 0 - humanPlayerPaddle.Width && ball.Location.X < this.Width / 2)
             {
-                RespawnBall(5);
-                ComputerPlayerScored(); 
+                RespawnBall(5);  // initiates ball respawn
+                ComputerPlayerScored(); // initiates computer player score incrementation
             }
-            // increase player score when ball crosses computer goal
-            else if (ball.Location.X > computerPaddle.Location.X + computerPaddle.Width && ball.Location.X > this.Width / 2)
+            // check to see if the computer player has scored
+            else if (ball.Location.X > computerPlayerPaddle.Location.X + computerPlayerPaddle.Width && ball.Location.X > this.Width / 2)
             {
-                RespawnBall(-5);
-                HumanPlayerScored(); 
+                RespawnBall(-5);  // initiates ball respawn
+                HumanPlayerScored(); // initiates human player score incrementation
             }
         }
 
@@ -207,90 +208,100 @@ namespace PongGame
             if (ball.Location.X < this.Width / 2)
             {
                 if (ball.Location.X < 0 + ball.Height / 3)
-                {
-                    xBallPosition *= -1; 
+                {                  
+                    xBallPosition = xBallPosition * -1; // change ball direction to the opposite direction
                 }
             }
             else if (ball.Location.X > this.Width / 2)
             {
-                if (ball.Location.X > computerPaddle.Location.X + (ball.Width /3))
-                {
-                    xBallPosition *= -1;
+                if (ball.Location.X > computerPlayerPaddle.Location.X + (ball.Width /3))
+                {                   
+                    xBallPosition = xBallPosition * -1; // change ball direction to the opposite direction
                 }
             }
         }
 
         // respawns ball at starting position after score takes place
-        private void RespawnBall(int _horizontalSpeed)
+        private void RespawnBall(int _initialHorizontalMovement)
         { 
             ball.Location = new Point(x, y);
             yBallPosition = 0;
-            xBallPosition = _horizontalSpeed;
+            xBallPosition = _initialHorizontalMovement;
         }
 
+        // sets ball starting values
         private void StartValues()
         {
             yBallPosition = 0;
             xBallPosition = -5; 
         }
-        private void BallMoves()
+        
+        // sets new ball position
+        private void NewBallPosition()
         {
-            ball.Top += yBallPosition;
-            ball.Left += xBallPosition; 
+            ball.Top = ball.Top + yBallPosition;
+            ball.Left = ball.Left + xBallPosition; 
         }
+
+
         private void Computer(object sender, EventArgs e)
         {
-            if (computerPaddle.Location.Y <= 0)
+            if (computerPlayerPaddle.Location.Y <= 0)
             {
-                computerPaddle.Location = new Point(computerPaddle.Location.X, 0); 
+                computerPlayerPaddle.Location = new Point(computerPlayerPaddle.Location.X, 0); 
             }
-            else if (computerPaddle.Location.Y >= limitPad)
+            else if (computerPlayerPaddle.Location.Y >= limitPad)
             {
-                computerPaddle.Location = new Point(computerPaddle.Location.X, limitPad);
+                computerPlayerPaddle.Location = new Point(computerPlayerPaddle.Location.X, limitPad);
             }
-            if (ball.Location.Y < computerPaddle.Top + (computerPaddle.Height / 2))
+            if (ball.Location.Y < computerPlayerPaddle.Top + (computerPlayerPaddle.Height / 2))
             {
-                computerPaddle.Top -= 3;
+                computerPlayerPaddle.Top = computerPlayerPaddle.Top - 3;
             }
-            else if (ball.Location.Y > computerPaddle.Top + (computerPaddle.Height / 2))
+            else if (ball.Location.Y > computerPlayerPaddle.Top + (computerPlayerPaddle.Height / 2))
             {
-                computerPaddle.Top += 3;
+                computerPlayerPaddle.Top = computerPlayerPaddle.Top + 3;
             }
         }
 
+        // Increments the human player's score
         private void HumanPlayerScored()
         {
-            playerScore++;
-            playerScoreLabel.Text = playerScore.ToString();
+            humanPlayerScore = humanPlayerScore + 1; // increments human player score by 1
+            humanPlayerScoreLabel.Text = humanPlayerScore.ToString(); // displays human player score
         }
 
         // increments ComputerPlayer's score and updates the scoreboard
         private void ComputerPlayerScored()
         {
-            computerScore++;
-            computerScoreLabel.Text = computerScore.ToString(); 
+            computerPlayerScore = computerPlayerScore + 1; // increments computer player score by 1
+            computerPlayerScoreLabel.Text = computerPlayerScore.ToString(); // displays computer player score
         }
+
+        // Starts the game
         private void StartButtonClick(object sender, EventArgs e)
         {
-            StartValues(); 
-            gameInProgress = true;
-            startButton.Visible = false;
-            humanPaddleTimer.Start();
-            ballTimer.Start();
-            computerPaddleTimer.Start(); 
+            StartValues(); //  sets the starting x and y values for the ball
+            gameInProgress = true;  
+            startButton.Visible = false;  // hides start button
+            humanPaddleTimer.Start();  // starts human paddle movement
+            ballTimer.Start(); // starts ball movement
+            computerPaddleTimer.Start();  // starts computer paddle movement
         }
+
+        // ends the game
         private void EndGame()
         {
-            humanPaddle.Location = new Point(0, 75);
-            computerPaddle.Location = new Point(454, 75);
+            humanPlayerPaddle.Location = new Point(0, 75);
+            computerPlayerPaddle.Location = new Point(454, 75);
             gameInProgress = false;
-            playerScore = 0;
-            computerScore = 0;
-            playerScoreLabel.Text = playerScore.ToString();
-            computerScoreLabel.Text = computerScore.ToString();
-            humanPaddleTimer.Stop();
-            ballTimer.Stop();
-            computerPaddleTimer.Stop();
+            humanPlayerScore = 0;
+            computerPlayerScore = 0;
+            humanPlayerScoreLabel.Text = humanPlayerScore.ToString();
+            computerPlayerScoreLabel.Text = computerPlayerScore.ToString();
+            humanPaddleTimer.Stop();  // stops human paddle movement
+            ballTimer.Stop();  // stops ball movement
+            computerPaddleTimer.Stop();  // stops computer paddle movement
             startButton.Visible = true; 
         }
     }

@@ -31,18 +31,18 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PongForm));
             this.ball = new System.Windows.Forms.PictureBox();
-            this.playerScoreLabel = new System.Windows.Forms.Label();
+            this.humanPlayerScoreLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.computerScoreLabel = new System.Windows.Forms.Label();
+            this.computerPlayerScoreLabel = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
             this.humanPaddleTimer = new System.Windows.Forms.Timer(this.components);
             this.ballTimer = new System.Windows.Forms.Timer(this.components);
             this.computerPaddleTimer = new System.Windows.Forms.Timer(this.components);
-            this.humanPaddle = new System.Windows.Forms.PictureBox();
-            this.computerPaddle = new System.Windows.Forms.PictureBox();
+            this.humanPlayerPaddle = new System.Windows.Forms.PictureBox();
+            this.computerPlayerPaddle = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.ball)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.humanPaddle)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.computerPaddle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.humanPlayerPaddle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.computerPlayerPaddle)).BeginInit();
             this.SuspendLayout();
 
             // Ball
@@ -54,13 +54,13 @@
             this.ball.TabStop = false;
 
             // playerScoreLabel
-            this.playerScoreLabel.AutoSize = true;
-            this.playerScoreLabel.Font = new System.Drawing.Font("MS Reference Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.playerScoreLabel.Location = new System.Drawing.Point(163, 9);
-            this.playerScoreLabel.Name = "playerScoreLabel";
-            this.playerScoreLabel.Size = new System.Drawing.Size(20, 20);
-            this.playerScoreLabel.TabIndex = 3;
-            this.playerScoreLabel.Text = "0";
+            this.humanPlayerScoreLabel.AutoSize = true;
+            this.humanPlayerScoreLabel.Font = new System.Drawing.Font("MS Reference Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.humanPlayerScoreLabel.Location = new System.Drawing.Point(163, 9);
+            this.humanPlayerScoreLabel.Name = "playerScoreLabel";
+            this.humanPlayerScoreLabel.Size = new System.Drawing.Size(20, 20);
+            this.humanPlayerScoreLabel.TabIndex = 3;
+            this.humanPlayerScoreLabel.Text = "0";
 
             // label2
             this.label2.AutoSize = true;
@@ -72,13 +72,13 @@
             this.label2.Text = ":";
 
             // computerScoreLabel
-            this.computerScoreLabel.AutoSize = true;
-            this.computerScoreLabel.Font = new System.Drawing.Font("MS Reference Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.computerScoreLabel.Location = new System.Drawing.Point(287, 9);
-            this.computerScoreLabel.Name = "computerScoreLabel";
-            this.computerScoreLabel.Size = new System.Drawing.Size(20, 20);
-            this.computerScoreLabel.TabIndex = 5;
-            this.computerScoreLabel.Text = "0";
+            this.computerPlayerScoreLabel.AutoSize = true;
+            this.computerPlayerScoreLabel.Font = new System.Drawing.Font("MS Reference Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.computerPlayerScoreLabel.Location = new System.Drawing.Point(287, 9);
+            this.computerPlayerScoreLabel.Name = "computerScoreLabel";
+            this.computerPlayerScoreLabel.Size = new System.Drawing.Size(20, 20);
+            this.computerPlayerScoreLabel.TabIndex = 5;
+            this.computerPlayerScoreLabel.Text = "0";
 
             // startButton
             this.startButton.Location = new System.Drawing.Point(196, 209);
@@ -91,7 +91,7 @@
             
             // timer1
             this.humanPaddleTimer.Interval = 5;
-            this.humanPaddleTimer.Tick += new System.EventHandler(this.MovePaddle);
+            this.humanPaddleTimer.Tick += new System.EventHandler(this.MoveHumanPaddle);
             
             // timer2
             this.ballTimer.Interval = 5;
@@ -102,34 +102,34 @@
             this.computerPaddleTimer.Tick += new System.EventHandler(this.Computer);
 
             // Player
-            this.humanPaddle.BackColor = System.Drawing.Color.Aqua;
-            this.humanPaddle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.humanPaddle.Location = new System.Drawing.Point(0, 75);
-            this.humanPaddle.Name = "Player";
-            this.humanPaddle.Size = new System.Drawing.Size(30, 90);
-            this.humanPaddle.TabIndex = 7;
-            this.humanPaddle.TabStop = false;            
+            this.humanPlayerPaddle.BackColor = System.Drawing.Color.Aqua;
+            this.humanPlayerPaddle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.humanPlayerPaddle.Location = new System.Drawing.Point(0, 75);
+            this.humanPlayerPaddle.Name = "Player";
+            this.humanPlayerPaddle.Size = new System.Drawing.Size(30, 90);
+            this.humanPlayerPaddle.TabIndex = 7;
+            this.humanPlayerPaddle.TabStop = false;            
             
             // Computer player             
-            this.computerPaddle.BackColor = System.Drawing.Color.Red;
-            this.computerPaddle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.computerPaddle.Location = new System.Drawing.Point(454, 75);
-            this.computerPaddle.Name = "PC";
-            this.computerPaddle.Size = new System.Drawing.Size(30, 90);
-            this.computerPaddle.TabIndex = 8;
-            this.computerPaddle.TabStop = false;
+            this.computerPlayerPaddle.BackColor = System.Drawing.Color.Red;
+            this.computerPlayerPaddle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.computerPlayerPaddle.Location = new System.Drawing.Point(454, 75);
+            this.computerPlayerPaddle.Name = "PC";
+            this.computerPlayerPaddle.Size = new System.Drawing.Size(30, 90);
+            this.computerPlayerPaddle.TabIndex = 8;
+            this.computerPlayerPaddle.TabStop = false;
             
             // PongForm
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(484, 261);
-            this.Controls.Add(this.computerPaddle);
-            this.Controls.Add(this.humanPaddle);
+            this.Controls.Add(this.computerPlayerPaddle);
+            this.Controls.Add(this.humanPlayerPaddle);
             this.Controls.Add(this.startButton);
-            this.Controls.Add(this.computerScoreLabel);
+            this.Controls.Add(this.computerPlayerScoreLabel);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.playerScoreLabel);
+            this.Controls.Add(this.humanPlayerScoreLabel);
             this.Controls.Add(this.ball);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PongForm";
@@ -137,8 +137,8 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyPressed);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyReleased);
             ((System.ComponentModel.ISupportInitialize)(this.ball)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.humanPaddle)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.computerPaddle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.humanPlayerPaddle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.computerPlayerPaddle)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -146,15 +146,15 @@
 
         #endregion
         private System.Windows.Forms.PictureBox ball;
-        private System.Windows.Forms.Label playerScoreLabel;
+        private System.Windows.Forms.Label humanPlayerScoreLabel;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label computerScoreLabel;
+        private System.Windows.Forms.Label computerPlayerScoreLabel;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Timer humanPaddleTimer;
         private System.Windows.Forms.Timer ballTimer;
         private System.Windows.Forms.Timer computerPaddleTimer;
-        private System.Windows.Forms.PictureBox humanPaddle;
-        private System.Windows.Forms.PictureBox computerPaddle;
+        private System.Windows.Forms.PictureBox humanPlayerPaddle;
+        private System.Windows.Forms.PictureBox computerPlayerPaddle;
     }
 }
 
